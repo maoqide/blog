@@ -1,0 +1,12 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: mysql-0
+  namespace: mysql2
+spec:
+  selector:
+   statefulset.kubernetes.io/pod-name: mysql-0
+  ports:
+    - protocol: TCP
+      port: 3306
+      targetPort: 3306

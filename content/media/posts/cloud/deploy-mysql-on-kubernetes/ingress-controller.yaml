@@ -1,0 +1,58 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    run: haproxy-ingress
+  name: haproxy-ingress-192.168.0.1-3306
+  namespace: mysql2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      run: haproxy-ingress
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        run: haproxy-ingress
+    spec:
+      tolerations:
+      - key: app 
+        operator: Equal 
+        value: haproxy
+        effect: NoSchedule
+      serviceAccount: ingress-controller      
+      nodeSelector:
+        kubernetes.io/hostname: csv-dcosnew31
+      containers:
+      - args:
+        - --tcp-services-configmap=$(POD_NAMESPACE)/mysql-tcp
+        - --default-backend-service=$(POD_NAMESPACE)/mysql
+        - --default-ssl-certificate=$(POD_NAMESPACE)/tls-secret
+        - --ingress-class=ha-mysql
+        env:
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.name
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.namespace
+        image: jcmoraisjr/haproxy-ingress
+        name: haproxy-ingress
+        ports:
+        - containerPort: 3306
+          hostPort: 30080
+          name: http
+          protocol: TCP
+        - containerPort: 443
+          name: https
+          protocol: TCP
+        - containerPort: 1936
+          hostPort: 30081
+          name: stat
+          protocol: TCP

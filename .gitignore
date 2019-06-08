@@ -1,0 +1,4 @@
+themes/*
+.vscode/*
+public/*
+*.ini

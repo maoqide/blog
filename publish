@@ -1,0 +1,8 @@
+MSG=$(date +%Y-%m-%d' '%H:%M)
+hugo
+cd public/
+echo "$MSG"
+echo "$(pwd)"
+git add .
+git commit -m "$MSG"
+git push

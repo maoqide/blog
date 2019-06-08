@@ -1,0 +1,2 @@
+#!/bin/sh
+git -C /usr/share/nginx/html/ reset --hard origin/master && git -C /usr/share/nginx/html/ pull
