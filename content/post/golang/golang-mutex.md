@@ -15,6 +15,9 @@ golang 的`sync`包中有两种锁，互斥锁`sync.Mutex` 和读写锁`sync.RWM
 - 在`Lock()`前使用`Unlock()`会导致 panic 异常    
 - 适用于读写不确定场景，即读写次数没有明显的区别，并且只允许只有一个读或者写的场景    
 
+	the zero value for a sync.Mutex is defined to be an unlocked mutex.    
+sync.Mutex 的零值定义为未加锁的互斥锁。 
+
 ## sync.RWMutex
 - RWMutex 是单写多读锁，可以加多个读锁或者一个写锁    
 - 读锁占用的情况下会阻止写，不会阻止读，多个 goroutine 可以同时获取读锁     
