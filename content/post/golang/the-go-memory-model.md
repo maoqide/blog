@@ -8,6 +8,7 @@ draft: false
 ---
 
 [译]https://golang.google.cn/ref/mem     
+
 Go内存模型指定了一个条件，在该条件下，可以保证在一个 goroutine 中读取变量，能够获取到另一个不同 goroutine 写入同一变量产生的值。    
 
 <!--more-->
