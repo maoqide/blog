@@ -3,7 +3,7 @@ title: "Kubelet-1 Kubelet 会做些什么"
 author: "Maoqide"
 tags: ["cloud", "kubernetes", "source-code"]
 date: 2019-07-14T11:30:24+08:00
-draft: true
+# draft: true
 ---
 
 Kubelet 是 Kubernetes 集群中非常重要的组件，起在集群中的每个几点上，具体 Kubelet 会做那些事情，可以通过 Kubelet 的源码找到答案。    
@@ -129,6 +129,12 @@ func (kl *Kubelet) Run(updates <-chan kubetypes.PodUpdate) {}
 
 	// Start loop to sync iptables util rules
 	if kl.makeIPTablesUtilChains {
+		// syncNetworkUtil ensures the network utility are present on host.
+		// Network util includes:
+		// 1. 	In nat table, KUBE-MARK-DROP rule to mark connections for dropping
+		// 	Marked connection will be drop on INPUT/OUTPUT Chain in filter table
+		// 2. 	In nat table, KUBE-MARK-MASQ rule to mark connections for SNAT
+		// 	Marked connection will get SNAT on POSTROUTING Chain in nat table
 		go wait.Until(kl.syncNetworkUtil, 1*time.Minute, wait.NeverStop)
 	}
 
@@ -195,15 +201,21 @@ goroutine 启动 volumeManager，保证调度到本节点的 pod 的 volume 执�
 `updateRuntimeUp`调用容器运行时状态回调，当容器运行时首次启动时初始化运行时依赖的模块，如果状态检测 ok，在 kubelet 的`runtimeState`中更新容器运行时的启动时间。updateRuntimeUp 方法首先调用`containerRuntime.Status()`获取容器运行时状态，当状态ok后，会调用`initializeRuntimeDependentModules`方法，初始化并运行 kubelet 中需要依赖容器运行时的模块。包括 containerManager、evictionManager、containerLogManager、pluginWatcher等。关于这几个模块，通过名字应该基本可以猜测到大概的功能，后面再做详细的分析。    
 
 ### syncNetworkUtil
+设置 iptables 规则，配置`KUBE-MARK-DROP`和`KUBE-MARK-MASQ`规则。     
 
 ### podKiller
-
+podKiller 从 kubelet 的`podKillingCh` channel 中接受并启动一个 goroutine 来 kill pod，kill 之前会先判断该 pod 是否已经有其他 goroutine 在执行 kill。    
 ### statusManager
+statusManager 和 apiserver 同步 pod 状态，同时也被用作状态的缓存。    
 
 ### probeManager
-
-### runtimeClassManager
+probeManager 处理 pod 的探针，并根据结果更新 pod 状态。    
 
 ### pleg
+pleg 是 PodLifecycleEventGenerator，即 pod 生命周期时间生成器。它周期性的执行 relist 方法，查询容器运行时来查询 pod/container 列表，和内部的 pod/container 列表作比对，并由此生成事件。    
 
 ### syncLoop
+最后，进入 syncLoop，即 kubelet 的主循环。syncLoop 从三个 channel 监听变化（file，apiserver，http），并将他们合并。对于发现的任何改变，kubelet 针对期望状态和实际运行状态作同步，如果没有变化，就在一定同步周期内，和上次发现的期望状态同步，永远不会退出。
+
+### syncLoopIteration
+syncLoop 中 执行 syncLoopIteration 方法进行真正的同步操作。具体代码在`pkg/kubelet/kubelet.go`中，逻辑较复杂，后面单独分析。        
