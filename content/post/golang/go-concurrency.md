@@ -235,7 +235,9 @@ Showing top 10 nodes out of 210
 还有其他有用的命令，可以输入 help 查看。     
 例子中获取的是 profile 信息，还可以通过其他 debug url，获取其他信息如 goroutine、heap 等，`go tool pprof http://127.0.0.1:8080/debug/pprof/heap`。     
 
-除了交互式命令行，go tool pprof 还提供了 web 页面，上面的命令加上 -http 参数，`go tool pprof -http=":8081" engine http://127.0.0.1:8080/debug/pprof/profile`，即可在指定端口启动一个 web 服务，通过 web 服务可以查看整个应用程序的各种性能信息及图表分析，火焰图等。    
+除了交互式命令行，go tool pprof 还提供了 web 页面，上面的命令加上 -http 参数，`go tool pprof -http=":8081" engine http://127.0.0.1:8080/debug/pprof/profile`，即可在指定端口启动一个 web 服务，通过 web 服务可以查看整个应用程序的各种性能信息及图表分析，火焰图等。     
+
+非 web 应用，可以在程序中使用 runtime/pprof 包，进行 profile 采集并生成文件，使用 go tool pprof 时将 url 换成文件路径即可。    
 
 参考：    
 - https://golang.org/doc/effective_go.html#concurrency     
