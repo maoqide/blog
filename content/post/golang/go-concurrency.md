@@ -4,7 +4,6 @@ author: "Maoqide"
 # cover: "/images/cover.jpg"
 tags: ["golang", "concurrency"]
 date: 2019-07-20T21:38:08+08:00
-draft: true
 ---
 
 go 语言相比其他语言的一大优势，就是便捷，高效的并发代码的编写。本文具体介绍 go 语言的并发机制和使用 go 语言作并发编程的方法。    
