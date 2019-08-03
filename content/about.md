@@ -12,6 +12,3 @@ Working on Cloud Native.
 Keep Learning.    
 
 ------
-
-Vultr.com 推广链接    
-[https://www.vultr.com/?ref=8128045](https://www.vultr.com/?ref=8128045)
