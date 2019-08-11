@@ -2,7 +2,7 @@
 title: "Go Concurrency"
 author: "Maoqide"
 # cover: "/images/cover.jpg"
-tags: ["golang", "concurrency"]
+tags: ["golang", "concurrency", "pprof", "goroutine"]
 date: 2019-07-20T21:38:08+08:00
 ---
 
