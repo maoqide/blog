@@ -2,7 +2,7 @@
 title: "Upgrade Kubernets From Binary to Kubeadm"
 author: "Maoqide"
 # cover: "/images/cover.jpg"
-tags: ["think"]
+tags: ["kubernetes", "kubeadm", "etcd"]
 date: 2019-08-06T13:55:04+08:00
 # draft: true
 ---
