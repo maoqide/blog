@@ -2,9 +2,9 @@
 title: "Kubernetes Webshell"
 author: "Maoqide"
 # cover: "/images/cover.jpg"
-tags: ["kubernetes", "webshell", "websocket", "xterm", "terminal"]
+tags: ["kubernetes", "webshell", "websocket", "xterm"]
 date: 2019-08-11T11:32:17+08:00
-draft: true
+# draft: true
 ---
 
 通过 client-go 提供的方法，实现通过网页进入 kubernetes pod 的终端操作。    
@@ -58,7 +58,7 @@ err = executor.Stream(remotecommand.StreamOptions{
 
 ## websocket
 [github.com/gorilla/websocket](https://github.com/gorilla/websocket) 是 go 的一个 websocket 实现，提供了全面的 websocket 相关的方法，这里使用它来实现上面所说的`PtyHandler`接口。    
-首先定义一个 TerminalSession 类，该类包含一个 `*websocket.Conn`，通过 websocket 连接实现`PtyHandler`接口的读写方法，Next 方法在 remotecommand。    
+首先定义一个 TerminalSession 类，该类包含一个 `*websocket.Conn`，通过 websocket 连接实现`PtyHandler`接口的读写方法，Next 方法在 remotecommand 执行过程中会被调用。     
 ```golang
 // TerminalSession
 type TerminalSession struct {
@@ -76,7 +76,6 @@ func (t *TerminalSession) Next() *remotecommand.TerminalSize {
 		return nil
 	}
 }
-
 // Read called in a loop from remotecommand as long as the process is running
 func (t *TerminalSession) Read(p []byte) (int, error) {
 	_, message, err := t.wsConn.ReadMessage()
@@ -125,3 +124,9 @@ func (t *TerminalSession) Close() error {
 	return t.wsConn.Close()
 }
 ```
+
+## xterm.js
+前端页面使用[xterm.js](https://github.com/xtermjs/xterm.js)进行模拟terminal展示，只要 javascript 监听 Terminal 对象的对应事件及 websocket 连接的事件，进行对应的页面展示和消息推送就可以了。    
+
+--------
+具体实现参考 https://github.com/maoqide/kubeutil.    
