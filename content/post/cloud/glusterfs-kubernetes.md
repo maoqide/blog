@@ -4,7 +4,7 @@ author: "Maoqide"
 # cover: "/images/cover.jpg"
 tags: ["kubernetes", "glusterfs", "presistence volume"]
 date: 2019-09-06T08:46:14+08:00
-draft: true
+draft: false
 ---
 
 在 kubernetes 中使用 glusterfs 作为 pv。    
