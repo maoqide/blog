@@ -15,7 +15,7 @@ draft: false
 - 3.10.0-957.27.2.el7.x86_64    
 
 ## 机器（virtualbox 虚拟机）
-- centos10 - 172.27.32.165 - kubernetes master节点    
+- centos10 - 172.27.32.165 - kubernetes master节点/glusterfs节点    
 - centos12l - 172.27.32.182 - glusterfs节点/kubernetes node节点     
 - centos11 - 172.27.32.164 - glusterfs节点/kubernetes node节点     
 
@@ -425,10 +425,70 @@ kubectl delete svc deploy-heketi
 kubectl delete deploy deploy-heketi
 ```
 
+修改 topology.json     
+```shell
+{
+  "clusters": [
+    {
+      "nodes": [
+        {
+          "node": {
+            "hostnames": {
+              "manage": [
+                "172.27.32.164"
+              ],
+              "storage": [
+                "172.27.32.164"
+              ]
+            },
+            "zone": 1
+          },
+          "devices": [
+            "/dev/sdc"
+          ]
+        },
+        {
+          "node": {
+            "hostnames": {
+              "manage": [
+                "172.27.32.182"
+              ],
+              "storage": [
+                "172.27.32.182"
+              ]
+            },
+            "zone": 1
+          },
+          "devices": [
+            "/dev/sdc"
+          ]
+        },
+        {
+          "node": {
+            "hostnames": {
+              "manage": [
+                "172.27.32.165"
+              ],
+              "storage": [
+                "172.27.32.165"
+              ]
+            },
+            "zone": 1
+          },
+          "devices": [
+            "/dev/sdc"
+          ]
+        }
+      ]
+    }
+  ]
+}
+```
+
 再次创建：     
 ```shell
-# heketi 默认要求至少3个glusterfs 节点，否则会报错 no space，我们只有两个节点，需要添加 --single-node 参数
-[root@centos10 deploy]$ ./gk-deploy --admin-key aGVsbG8= --user-key aGVsbG8=  --ssh-keyfile /root/.ssh/id_rsa --single-node
+# heketi 默认要求至少3个glusterfs 节点，否则会报错 no space，添加一个节点 172.27.32.165
+[root@centos10 deploy]$ ./gk-deploy --admin-key aGVsbG8= --user-key aGVsbG8=  --ssh-keyfile /root/.ssh/id_rsa
 Welcome to the deployment tool for GlusterFS on Kubernetes and OpenShift.
 
 Before getting started, this script has some requirements of the execution
@@ -470,9 +530,7 @@ Using Kubernetes CLI.
 Using namespace "default".
 Checking for pre-existing resources...
   GlusterFS pods ... not found.
-  deploy-heketi pod ... 
-
-not found.
+  deploy-heketi pod ... not found.
   heketi pod ... not found.
   gluster-s3 pod ... not found.
 Creating initial resources ... serviceaccount "heketi-service-account" created
@@ -483,15 +541,15 @@ secret "heketi-config-secret" created
 secret "heketi-config-secret" labeled
 service "deploy-heketi" created
 deployment.extensions "deploy-heketi" created
-Waiting for deploy-heketi pod to start ... 
-OK
-
-Creating cluster ... ID: 09f68c8a429b152a196d0edc936c170f
+Waiting for deploy-heketi pod to start ... OK
+Creating cluster ... ID: d46fce0516378e5aa913bd1baf97d08b
 Allowing file volumes on cluster.
 Allowing block volumes on cluster.
-Creating node 172.27.32.164 ... ID: 534b4285f90fadabc67341e8547a21fa
+Creating node 172.27.32.164 ... ID: 8058c666087f1b411738b802b6cf1d5d
 Adding device /dev/sdc ... OK
-Creating node 172.27.32.182 ... ID: c53b72f42949056bcf21aa360f3ec442
+Creating node 172.27.32.182 ... ID: b08d71449838ed66e2d5aa10f2b8771b
+Adding device /dev/sdc ... OK
+Creating node 172.27.32.165 ... ID: 9b173570da2fee54f25ed03e74f11c72
 Adding device /dev/sdc ... OK
 heketi topology loaded.
 Saving /tmp/heketi-storage.json
@@ -500,25 +558,26 @@ endpoints "heketi-storage-endpoints" created
 service "heketi-storage-endpoints" created
 job.batch "heketi-storage-copy-job" created
 service "heketi-storage-endpoints" labeled
-pod "deploy-heketi-bf46f97fb-p9t4m" deleted
+pod "deploy-heketi-bf46f97fb-k42wr" deleted
 service "deploy-heketi" deleted
 deployment.apps "deploy-heketi" deleted
 job.batch "heketi-storage-copy-job" deleted
 secret "heketi-storage-secret" deleted
 service "heketi" created
 deployment.extensions "heketi" created
-Waiting for heketi pod to start ... OK
+Waiting for heketi pod to start ... 
+OK
 Flag --show-all has been deprecated, will be removed in an upcoming release
 
-heketi is now running and accessible via http://10.244.145.28:8080 . To run
+heketi is now running and accessible via http://10.244.106.5:8080 . To run
 administrative commands you can install 'heketi-cli' and use it as follows:
 
-  # heketi-cli -s http://10.244.145.28:8080 --user admin --secret '<ADMIN_KEY>' cluster list
+  # heketi-cli -s http://10.244.106.5:8080 --user admin --secret '<ADMIN_KEY>' cluster list
 
 You can find it at https://github.com/heketi/heketi/releases . Alternatively,
 use it from within the heketi pod:
 
-  # /usr/bin/kubectl -n default exec -i heketi-77f4797494-45cfl -- heketi-cli -s http://localhost:8080 --user admin --secret '<ADMIN_KEY>' cluster list
+  # /usr/bin/kubectl -n default exec -i heketi-77f4797494-8sqng -- heketi-cli -s http://localhost:8080 --user admin --secret '<ADMIN_KEY>' cluster list
 
 For dynamic provisioning, create a StorageClass similar to this:
 
@@ -529,7 +588,7 @@ metadata:
   name: glusterfs-storage
 provisioner: kubernetes.io/glusterfs
 parameters:
-  resturl: "http://10.244.145.28:8080"
+  resturl: "http://10.244.106.5:8080"
   restuser: "user"
   restuserkey: "aGVsbG8="
 
@@ -538,8 +597,122 @@ Deployment complete!
 ```
 创建成功！    
 
-## 创建 storageclass 测试
+```shell
+kubectl delete secret heketi-storage-secret
+kubectl delete endpoint heketi-storage-endpoints
+kubectl delete svc heketi-storage-endpoints
+kubectl delete job heketi-storage-copy-job
+kubectl delete svc heketi
+kubectl delete deploy heketi
+```
 
+## 创建 storageclass 测试
+`kubectl create -f glusterfs-storage.yaml`    
+```yaml
+---
+apiVersion: storage.k8s.io/v1beta1
+kind: StorageClass
+metadata:
+  name: glusterfs-storage
+provisioner: kubernetes.io/glusterfs
+parameters:
+  resturl: "http://10.254.130.133:8080" # heketi service ip
+  restuser: "admin"
+  restuserkey: "aGVsbG8="
+```
+`kubectl create -f pvc.yaml`        
+```yaml
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: gluster-pvc-test
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: glusterfs-storage
+  resources:
+    requests:
+      storage: 1Gi
+```
+
+创建pvc，等待一段时间后，从Pending变为Bound状态    
+```shell
+[root@centos10 gfs]$ kubectl get pvc -w
+NAME               STATUS    VOLUME    CAPACITY   ACCESS MODES   STORAGECLASS        AGE
+gluster-pvc-test   Pending                                       glusterfs-storage   13s
+gluster-pvc-test   Pending   pvc-cacc8019-d9e4-11e9-b223-0800272600e0   0                   glusterfs-storage   25s
+gluster-pvc-test   Bound     pvc-cacc8019-d9e4-11e9-b223-0800272600e0   1Gi       RWO       glusterfs-storage   25s
+```
+自动创建了对应pv    
+```shell
+[root@centos10 gfs]$ kubectl get pv
+NAME                                       CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS    CLAIM                      STORAGECLASS        REASON    AGE
+pvc-cacc8019-d9e4-11e9-b223-0800272600e0   1Gi        RWO            Delete           Bound     default/gluster-pvc-test   glusterfs-storage             52s
+```
+`kubectl create -f nginx.yaml`        
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx
+spec:
+  selector:
+    matchLabels:
+      app: nginx
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: harbor.guahao-inc.com/test4engine/nginx:1.15-alpine
+        volumeMounts:
+        - mountPath: "/root/"
+          name: root
+        ports:
+        - containerPort: 80
+        resources:
+          limits:
+            cpu: "1"
+            memory: 5Mi
+          requests:
+            2: 500m
+            memory: 5Mi
+      volumes:
+        - name: root
+          persistentVolumeClaim:
+            claimName: gluster-pvc-test
+```
+创建Pod绑定到PVC上，pod running。     
+```shell
+[root@centos10 gfs]# kubectl get pod  -owide
+NAME                      READY     STATUS    RESTARTS   AGE       IP              NODE
+...............
+nginx-6dc67b9dc5-84sfg    1/1       Running   0          2m        10.244.145.35   172.27.32.164
+```
+```shell
+# 向 pod 中写入数据
+kubectl exec -it nginx-6dc67b9dc5-84sfg sh
+echo hello > /root/hello.txt
+```
+```shell
+# 每台 glusterfs node 节点都会生成类似如下目录（每台节点的vg_xxx和brick_xxx名称不同），并可看到目录中有刚才写入pod的文件.
+ls /var/lib/heketi/mounts/vg_2c32b0932a02c5b2098de24592b9a2f1/brick_1bf403d9677e9ae11e370f5fcaf8b9bb/brick/
+```
+```shell
+# 删除 deployment，pv 数据仍然存在,重新创建deployment，仍然可以绑定到原有pv。
+kubectl delete -f nginx.yaml
+# 删除 pvc，对应pv会变成Released状态，并稍后被删除。
+kubectl delete -f pvc.yaml
+```
+```shell
+[root@centos10 gfs]$ kubectl get pv -w
+NAME                                       CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS     CLAIM                      STORAGECLASS        REASON    AGE
+pvc-cacc8019-d9e4-11e9-b223-0800272600e0   1Gi        RWO            Delete           Relegiased   default/gluster-pvc-test   glusterfs-storage             9h
+pvc-cacc8019-d9e4-11e9-b223-0800272600e0   1Gi       RWO       Delete    Failed    default/gluster-pvc-test   glusterfs-storage             9h
+```
 ## 创建 pv pvc 测试
 
 ## 在 kubernetes 集群内起 glusterfs pod
