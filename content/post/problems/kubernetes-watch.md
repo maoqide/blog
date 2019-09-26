@@ -2,7 +2,7 @@
 title: "Kubernetes Watch"
 author: "Maoqide"
 # cover: "/images/cover.jpg"
-tags: ["think"]
+tags: ["peoblems"]
 date: 2019-09-23T13:50:30+08:00
 draft: true
 ---
