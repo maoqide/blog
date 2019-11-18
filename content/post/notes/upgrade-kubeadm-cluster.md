@@ -105,8 +105,10 @@ I1031 16:03:08.955081   25594 request.go:530] Throttling request took 185.13957m
 nodeRegistration:
   name: <real-node-name>
 ```
-并重新执行`kubeadm upgrade apply  v1.12.10 --config kubeadm.yaml`即可。    
-```
+并重新执行`kubeadm upgrade apply  v1.12.10 --config kubeadm.yaml`即可。     
+
+在1.13及以后版本中，`kubeadm config print-default` 被修改为`kubeadm config print`的子命令，可执行`kubeadm config print init-defaults`。 
+```   
 ...
 
 nodeRegistration:
@@ -118,6 +120,7 @@ token: abcdef.0123456789abcdef
 ```
 
 
+    1.12升1.13及以后版本，不需要指定 --condig 参数，kubeadm会自动从configmap中读取，只需要执行 kubeadm upgrade apply v1.13.12 即可。     
 ```shell
 [root@centos10 v1.12.10]$ kubeadm upgrade apply  v1.12.10 --config kubeadm.yaml  -v 5
 I1031 16:18:09.848434   31033 apply.go:86] running preflight checks
@@ -259,7 +262,7 @@ cp /usr/lib/systemd/system/kubelet.service.d/10-kubeadm.conf 10-kubeadm.conf.bak
 # upgrade kubelet/kubeadm
 yum upgrade -y  kubelet-1.12.10 kubeadm-1.12.10 --disableexcludes=kubernetes
 # kubeadm upgrade node config
-kubeadm upgrade node config --kubelet-version $(kubelet --version | cut -d ' ' -f 2)
+kubeadm upgrade node config --kubelet-version $(kubelet --version | cut -d ' ' -f 2)'
 # restart
 systemctl daemon-reload
 systemctl restart kubelet
