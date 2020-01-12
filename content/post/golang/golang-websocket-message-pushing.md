@@ -7,7 +7,7 @@ date: 2020-01-11T20:49:24+08:00
 draft: false
 ---
 
-使用 golang 的 websocket 框架 [melody](https://github.com/olahol/melody)，实现通用的消息推送服务。针对同一推送对象，只起一个后端协程进行广播推送，减少资源消耗，并提供监控接口查询当前的协程和websocket连接。    
+使用 golang 的 websocket 框架 [melody](https://github.com/olahol/melody)，实现通用的消息分组推送服务。针对同一推送对象，只起一个后端协程进行广播推送，减少资源消耗，并提供监控接口查询当前的协程和websocket连接。    
 github：[ws-notifier](https://github.com/maoqide/ws-notifier)    
 <!--more-->
 
