@@ -8,8 +8,9 @@ draft: false
 ---
 
 使用 golang 的 websocket 框架 [melody](https://github.com/olahol/melody)，实现通用的消息分组推送服务。针对同一推送对象，只起一个后端协程进行广播推送，减少资源消耗，并提供监控接口查询当前的协程和websocket连接。    
-github：[ws-notifier](https://github.com/maoqide/ws-notifier)    
 <!--more-->
+
+github：[ws-notifier](https://github.com/maoqide/ws-notifier)    
 
 ## melody
 melody 是一个 golang 的 websocket 框架，通过对 [websocket](https://github.com/gorilla/websocket) 包装，实现方便的广播或推送消息给多个指定的 session。     
