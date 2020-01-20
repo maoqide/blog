@@ -90,7 +90,7 @@ pullgcr k8s.gcr.io/etcd:3.2.24
 ```
 如果使用的内部镜像仓库，将以上镜像tag后推送到内部的镜像仓库中。    
 ```shell
-# using fry-run flag for validation
+# using dry-run flag for validation
 kubeadm upgrade apply v1.12.10 --config kubeadm.yaml --dry-run
 ```
 
