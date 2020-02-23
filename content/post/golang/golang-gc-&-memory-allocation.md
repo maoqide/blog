@@ -4,7 +4,6 @@ author: "Maoqide"
 # cover: "/images/cover.jpg"
 tags: ["golang", "gc"]
 date: 2020-02-18T17:20:47+08:00
-draft: true
 ---
 
 关于 Golang GC 和内存管理相关的流程和原理的一些总结。    
