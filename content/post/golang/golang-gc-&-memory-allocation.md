@@ -64,4 +64,5 @@ golang 内存分配分为堆内存和栈内存。
    当栈空间不足或无法判断当前切片长度时会将对象分配到堆上。    
 3. 动态类型逃逸    
    当函数参数为 interface 类型，编译期间无法确定参数的具体类型，也可能会产生逃逸。     
-   
+
+[参考列表](http://maoqide.live/post/awesome-post/collection-4/)    
