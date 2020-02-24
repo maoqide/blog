@@ -2,7 +2,7 @@
 title: "Golang Gc & Memory Allocation"
 author: "Maoqide"
 # cover: "/images/cover.jpg"
-tags: ["golang", "gc"]
+tags: ["golang", "gc", "memory"]
 date: 2020-02-18T17:20:47+08:00
 ---
 
