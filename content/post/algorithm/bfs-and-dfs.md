@@ -53,6 +53,7 @@ func BFS(root *Node) {
 ## DFS(深度优先搜索)
 DFS 沿着树的深度遍历树的节点，尽可能深的搜索树的分支。当节点v的所在边都己被探寻过，搜索将回溯到发现节点v的那条边的起始节点。这一过程一直进行到已发现从源节点可达的所有节点为止。通常使用递归实现。    
 ```golang
+// DFS 伪代码
 func DFS(root *Node) {
 	// 记录已被访问的节点，避免重复访问
 	var visited = make(map[*Node]bool)
