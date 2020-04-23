@@ -6,10 +6,11 @@ menu: "main"
 weight: 50
 ---
 
-A Programmer.     
-A Gopher.     
-Working on Cloud Native.    
+Programmer.     
+Gopher.     
+Cloud Native, Kubernetes, Docker, CICD...    
 Keep Learning.    
 
 ------
-- contact: maoqidemail@gmail.com
+- Contact: <maoqidemail@gmail.com>    
+- Github: [https://github.com/maoqide](https://github.com/maoqide)    
