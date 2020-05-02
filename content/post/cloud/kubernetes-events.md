@@ -825,4 +825,6 @@ func (c *EventCorrelator) UpdateState(event *v1.Event) {
 ```
 
 ### summary
-通过从 kubelet 的 'BirthCry' 入手，分析了一个事件在 kubernetes 中的全部流程，以及如何对事件进行关联、聚合和过滤，同时其他组件的事件发送流程，也是大同小异，感兴趣的话可以自己选一个进行分析。另外，自己开发自定义的 controller 或其他自定义组件的时候，也可以尝试通过这一流程，将自己需要记录的事件，通过 kubernetes Event 的形式发送。    
+本文通过从 kubelet 的 'BirthCry' 入手，分析了一个事件在 kubernetes 中的全部流程，以及如何对事件进行关联、聚合和过滤，同时其他组件的事件发送流程，也是大同小异，感兴趣的话可以自己选一个进行分析。另外，自己开发自定义的 controller 或其他自定义组件的时候，也可以尝试通过这一流程，将自己需要记录的事件，通过 kubernetes Event 的形式发送。    
+附：kubernetes 事件整体流程    
+![](/media/posts/cloud/kubernetes-events/kubernetes-event.jpg)    
