@@ -4,7 +4,7 @@ author: "Maoqide"
 # cover: "/images/cover.jpg"
 tags: ["kubernetes", "source code", "event", "kubernetes event"]
 date: 2020-04-25T16:38:17+08:00
-draft: true
+# draft: true
 ---
 
 通过源码探究 kubernetes 如何记录和存储集群中的大量事件信息。    
