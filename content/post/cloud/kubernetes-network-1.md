@@ -146,3 +146,29 @@ tun/tap 设备的特点：一端连着协议栈，另一端连着用户态程序
 
 
 ## iptables
+iptables 底层实现是 netfilter，netfilter 在 IP 层放置 5 个钩子， PREROUTING, POSTROUTING, INPUT, OUTPUT, FORWARD。    
+iptables 是用户空间的一个程序，通过 netlink 和内核的 netfilter 框架打交道，负责往钩子上配置回调函数。    
+iptables 4表5链/5表5链：     
+
+5 条链:    
+- PREROUTING: 数据包进入路由表之前，可以在此处进行 DNAT    
+- INPUT: 通过路由表后目的地为本机，一般用于处理输入本地进程的数据包    
+- FORWARDING: 通过路由表后，目的地不为本机，一般用于处理转发到其他机器/network namespace 的数据包    
+- OUTPUT: 由本机产生，向外转发，一般用于处理本地进程的输出数据包    
+- POSTROUTIONG: 发送到网卡接口之前，可以在此处进行 SNAT    
+
+5 张表:     
+- filter: 一般的过滤功能，用于控制到达某条链的数据包是 放行、丢弃(drop) 或拒绝 (reject)    
+- nat: 用于 nat 功能（端口映射，地址映射等），修改数据包的源和目的地址    
+- mangle: 用于对特定数据包的修改，修改数据包的 IP 头信息    
+- raw: 有限级最高，设置 raw 时一般是为了不再让 iptables 做数据包的链接跟踪处理，提高性能    
+- *security: 不常用，用于在数据包上应用 SELinux*     
+优先级: raw > mangle > nat > filter > security   
+
+![](/media/posts/cloud/network/tables_traverse.jpg)    
+
+每张表上可以挂的链的种类不同，具体如下:     
+- filter表: INPUT、FORWARD、OUTPUT    
+- nat表: PREROUTING、POSTROUTING、OUTPUT    
+- mangle表: PREROUTING、POSTROUTING、INPUT、OUTPUT、FORWARD    
+- raw表: OUTPUT、PREROUTING    
