@@ -148,7 +148,9 @@ tun/tap 设备的特点：一端连着协议栈，另一端连着用户态程序
 ## iptables
 iptables 底层实现是 netfilter，netfilter 在 IP 层放置 5 个钩子， PREROUTING, POSTROUTING, INPUT, OUTPUT, FORWARD。    
 iptables 是用户空间的一个程序，通过 netlink 和内核的 netfilter 框架打交道，负责往钩子上配置回调函数。    
-iptables 4表5链/5表5链：     
+
+iptables 使用 Xtables 框架。存在表(tables）、链(chain）和规则(rules）三个层面。    
+每个**表**指的是不同类型的数据包处理流程，如 filter 表表示进行数据包过滤，而 nat 表针对连接进行地址转换操作。每个表中又可以存在多个**链**，系统按照预订的规则将数据包通过某个内建链，例如将从本机发出的数据通过OUTPUT链。在**链**中可以存在若干**规则**，这些规则会被逐一进行匹配，如果匹配，可以执行相应的**动作**，如修改数据包，或者跳转。跳转可以直接接受该数据包或拒绝该数据包，也可以跳转到其他链继续进行匹配，或者从当前链返回调用者链。当链中所有规则都执行完仍然没有跳转时，将根据该链的默认策略(policy)执行对应动作；如果也没有默认动作，则是返回调用者链。        
 
 5 条链:    
 - PREROUTING: 数据包进入路由表之前，可以在此处进行 DNAT    
@@ -172,3 +174,12 @@ iptables 4表5链/5表5链：
 - nat表: PREROUTING、POSTROUTING、OUTPUT    
 - mangle表: PREROUTING、POSTROUTING、INPUT、OUTPUT、FORWARD    
 - raw表: OUTPUT、PREROUTING    
+
+常见的动作:    
+- DROP: 直接将数据包丢弃，不再进行后续处理。场景：模拟宕机、服务不存在。    
+- REJECT: 返回客户端`connection refused`或`destination unreachable`报文。场景：拒绝客户端访问。    
+- QUEUE: 将数据包放入用户空间的队列，供用户空间的程序处理。    
+- RETURN: 跳出当前链，该链中后续规则不再执行。    
+- ACCEPT: 同意数据包通过，继续执行后续规则。    
+- JUMP: 跳转到其他用户自定义链继续执行。    
+
