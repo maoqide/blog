@@ -183,3 +183,59 @@ iptables 使用 Xtables 框架。存在表(tables）、链(chain）和规则(rul
 - ACCEPT: 同意数据包通过，继续执行后续规则。    
 - JUMP: 跳转到其他用户自定义链继续执行。    
 
+常用命令:    
+```bash
+# 查看 filter(默认)表所有规则
+iptables -L -n [-v]
+
+# 查看 nat 表所有规则
+iptables -t nat -L -n
+
+# 配置内置链默认策略
+# 默认不让进
+iptables --policy INPUT DROP
+# 默认不允许转发
+iptables --policy FORWARD DROP
+# 默认允许出
+iptables --policy OUTPUT ACCEPT
+
+# 允许 SSH 连接(22端口), -A append -i insert
+iptables -A INPUT -s 0.0.0.0/0 -p tcp --dport 22 -j ACCEPT
+
+# 阻止某 IP/网段的所有连接
+iptables -A INPUT -s 192.168.100.2 -j DROP
+iptables -A INPUT -s 192.168.100.1/24 -j DROP
+
+# 阻止本地端口对外连接
+iptables -A OUTPUT -p tcp --dport 8888 -j DROP
+
+# 端口转发
+iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -j REDIRECT --to-port 8080
+
+# 禁用 ping
+iptables -A INPUT -p icmp -j DROP
+
+# 删除规则
+# 清空所有规则
+iptables -F
+# 清空特定表
+iptables -t nat -F
+# 删除特定规则
+iptables -D INPUT -s 192.168.100.2 -j DROP
+# 删除自定义链
+iptables -X user_chain
+
+# DNAT, 目的地址转换
+iptables -t nat -A PREROUTING -d 192.168.100.2 -p tcp --dport 80 [-i eth0] -j DNAT --to-destination 192.168.100.3:8080
+
+# SNAT, 源地址转换
+iptables -t nat -A POSTROUTING -s 192.168.100.2 [-o eth0] -j SNAT --to-source 192.168.100.3
+iptables -t nat -A POSTROUTING -s 192.168.100.0/24 [-o eth0] -j SNAT --to-source 192.168.100.3
+
+# 保存修改, 否则只临时生效
+iptables-save
+# 备份
+iptables-save > iptables.bak
+# 恢复
+iptables-restore < iptables.bak
+```
