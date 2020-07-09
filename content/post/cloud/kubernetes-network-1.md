@@ -2,13 +2,12 @@
 title: "Kubernetes Network 1"
 author: "Maoqide"
 # cover: "/images/cover.jpg"
-tags: ["think"]
+tags: ["network", "kubernetes"]
 date: 2020-06-23T09:00:24+08:00
 draft: true
 ---
 
-Cut out summary from your post content here.
-
+kubernetes 网络 -- 基础知识
 <!--more-->
 
 ## veth pair
@@ -239,3 +238,6 @@ iptables-save > iptables.bak
 # 恢复
 iptables-restore < iptables.bak
 ```
+
+## VXLAN
+VXLAN(Virtual Extensible LAN, VXLAN) 是一种网络虚拟化技术，通过 overlay 方式在三层网络搭建虚拟的二层网络。    
