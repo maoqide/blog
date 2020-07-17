@@ -2,16 +2,15 @@
 title: "Sample Operator"
 author: "Maoqide"
 # cover: "/images/cover.jpg"
-tags: ["think"]
+tags: ["operator", "sample-controller", "kubernetes", "crd"]
 date: 2020-06-29T15:40:29+08:00
-draft: true
+# draft: true
 ---
 
-sample operator for kubernetes sample controller.    
+用 kubebuilder 开发 operator 实现 sample-controller    
 <!--more-->
 
 ## kubebuilder
-
 
 ### 生成脚手架
 ```bash
@@ -227,5 +226,59 @@ type Foo struct {
 ```
 
 ### 添加 Reconcile 逻辑
-controller 主要逻辑在 controllers/foo_controller.go 中。
+operator 的主要逻辑在 controllers/foo_controller.go 中。其中，SetupWithManager 默认如下，用来设置监听的资源类型，默认监听 CRD 类型本身，可以通过链式调用添加其他的资源监听，如`.For(&sampleoperatorv1alpha1.Foo{}).Owns(&appsv1.Deployment{}).Complete(r)`。   
+```golang
+// SetupWithManager setup
+func (r *FooReconciler) SetupWithManager(mgr ctrl.Manager) error {
+	return ctrl.NewControllerManagedBy(mgr).
+		For(&sampleoperatorv1alpha1.Foo{}).
+		Complete(r)
+}
+```
 
+核心逻辑是 Reconcile 方法，在这个方法内实现 operator 的逻辑，并通过返回的 Result 来控制是否需要稍后重试(即放回 controller 的 workqueue)。另外在 foo_controller.go 中可通过`+kubebuilder:rbac:groups`注解来为 operator 添加 rbac 权限，如添加对 Deployment 的权限`+kubebuilder:rbac:groups=apps,resources=deployment,verbs=get;list;watch;create;update;patch;delete`，修改了 rbac 权限后，需要执行`make manifests`重新生成 rbac yaml 文件。     
+
+sample controller 代码在 (https://github.com/maoqide/sample-operator)[https://github.com/maoqide/sample-operator]，实现了和 (sample controller)[https://github.com/kubernetes/sample-controller] 相同的功能，可以将两者进行参照对比。    
+
+### 对比
+#### sample controller
+初始目录结构:    
+```
+sample-controller
+├── hack
+│   ├── boilerplate.go.txt
+│   ├── custom-boilerplate.go.txt
+│   ├── update-codegen.sh
+│   └── verify-codegen.sh
+└── pkg
+    └── apis
+        └── samplecontroller
+            ├── register.go
+            └── v1alpha1
+                ├── doc.go
+                ├── register.go
+                └── types.go
+```
+- 定义 CRD:    
+  - /pkg/apis/samplecontroller/register.go, 更改全局变量 `GroupName`。    
+  - /pkg/apis/samplecontroller/v1alpha1/doc.go, 更改注解 `+groupName=samplecontroller.k8s.io`。    
+  - /pkg/apis/samplecontroller/v1alpha1/register.go, 修改对应代码。    
+  - /pkg/apis/samplecontroller/v1alpha1/types.go, 修改 CRD 结构体定义及相关注解。    
+- 修改 hack/update-codegen.sh 脚本，并执行进行代码生成，在 pkg/ 下生成对应客户端包。    
+- 编写 controller 逻辑代码。    
+- 编写 CRD、rbac 等 yaml 文件。    
+- 部署到 k8s 集群。    
+具体可参考 http://maoqide.live/post/cloud/sample-controller/    
+
+#### sample operator
+- 生成脚手架 `kubebuilder init --domain k8s.io`    
+- 生成 CRD 模版 `kubebuilder create api --group sampleoperator --version v1alpha1 --kind Foo`    
+- 更改 api/v1alpha1/foo_types.go 文件定义 CRD, 更改完成后执行`make manifests`和`make generate`更新 CRD 相关 yaml 文件和代码生成。    
+  - 定义 CRD 的结构体，并可通过注解配置该 field 的 optional/validation 等    
+  - 通过注解`+kubebuilder:subresource:status`配置资源 subresource     
+- 更改 controllers/foo_controller.go 文件，更改完成后执行`make manifests`和`make generate`更新 CRD 相关 yaml 文件和代码生成。    
+  - 通过注解`+kubebuilder:rbac:groups`配置 operator rbac 权限    
+  - 修改 SetupWithManager 方法，添加要监听的资源类型(Builder.Owns(apiType runtime.Object))    
+  - 填充 FooReconciler.Reconcile() 方法具体逻辑    
+- 执行 `make install` 将 CRD 部署到目标集群    
+- 执行 `make deploy` 可将 operator 以 deployment 部署到目标集群    
