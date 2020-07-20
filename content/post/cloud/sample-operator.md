@@ -238,7 +238,7 @@ func (r *FooReconciler) SetupWithManager(mgr ctrl.Manager) error {
 
 核心逻辑是 Reconcile 方法，在这个方法内实现 operator 的逻辑，并通过返回的 Result 来控制是否需要稍后重试(即放回 controller 的 workqueue)。另外在 foo_controller.go 中可通过`+kubebuilder:rbac:groups`注解来为 operator 添加 rbac 权限，如添加对 Deployment 的权限`+kubebuilder:rbac:groups=apps,resources=deployment,verbs=get;list;watch;create;update;patch;delete`，修改了 rbac 权限后，需要执行`make manifests`重新生成 rbac yaml 文件。     
 
-sample controller 代码在 (https://github.com/maoqide/sample-operator)[https://github.com/maoqide/sample-operator]，实现了和 (sample controller)[https://github.com/kubernetes/sample-controller] 相同的功能，可以将两者进行参照对比。    
+sample controller 代码在 (https://github.com/maoqide/sample-operator)[https://github.com/maoqide/sample-operator], 实现了和 (sample controller)[https://github.com/kubernetes/sample-controller] 相同的功能，可以将两者进行参照对比。    
 
 ### 对比
 #### sample controller
