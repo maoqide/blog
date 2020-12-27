@@ -1,13 +1,13 @@
 ---
-title: "Kubernetes Pattern"
+title: "Application Containerization"
 author: "Maoqide"
 # cover: "/images/cover.jpg"
-tags: ["kubernetes", "crd", "design"]
+tags: ["containerize", "best-practice"]
 date: 2020-08-10T09:18:18+08:00
-draft: true
+# draft: true
 ---
 
-应用容器化和 K8S 部署最佳实践    
+应用容器化部署最佳实践    
 <!--more-->
 
 ## 镜像构建
