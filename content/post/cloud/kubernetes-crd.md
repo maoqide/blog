@@ -4,7 +4,7 @@ author: "Maoqide"
 # cover: "/images/cover.jpg"
 tags: ["kubernetes", "crd"]
 date: 2020-10-29T09:00:05+08:00
-# draft: true
+draft: true
 ---
 
 <!--more-->
