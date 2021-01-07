@@ -100,3 +100,4 @@ NewSchedulerCommand()
 
 - Predicate 算法：pkg\scheduler\algorithm\predicates    
 - Priority 算法：pkg\scheduler\algorithm\priorities
+- 默认注册: k8s.io/kubernetes/pkg/scheduler/algorithmprovider/defaults
