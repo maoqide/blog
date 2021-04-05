@@ -4,7 +4,7 @@ author: "Maoqide"
 # cover: "/images/cover.jpg"
 tags: ["etcd", "raft", "distributed"]
 date: 2021-03-22T09:37:09+08:00
-draft: false
+# draft: false
 ---
 
 Raft 是一个管理复制日志的分布式一致性算法，也是 ETCD 实现分布式一致性的基础，保证 ETCD 集群中各节点数据的强一致性。    
