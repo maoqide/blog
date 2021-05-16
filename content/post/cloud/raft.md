@@ -84,9 +84,10 @@ Raft 通过在 leader 选举时添加额外的约束来完善算法，这个约�
 Raft 通过投票的过程，阻止不包含全部已提交条目的候选人赢得选举。candidate 想要赢得选举，必须要联系集群中大多数的节点，这意味着每个已提交的条目都在这些节点中的至少一个上存在。如果 candidate 的日志任一其他节点相比，至少同样新，那么它一定持有所有已提交的日志。RequestVote RPC 实现了这一限制，请求中包含了 candidate 的 log 的信息，**如果被请求投票的节点的日志比 candidate 还要新，那么它会拒绝投票**。    
 Raft 通过比较最后一个日志条目的 index 和 term 来**判断两个日志谁更新**。如果两个日志最后一个条目 term 不同，那么 term 更大的日志更新；如果 term 相同，那么日志更长（可理解为 index 更大）的那个更新。    
 
-## 日志压缩和快照
+## 日志快照
+![https://raft.github.io/raft.pdf](/media/posts/cloud/raft/raft-snapshot.png)    
+上图为一个节点用一个新的快照替换已提交的日志条目（序号1-5），快照中只存储当前的状态。快照还包含了最后的索引和任期号。    
 
-## 集群成员（配置）变更
 
 ## Reference
 - [Raft 论文原文](https://raft.github.io/raft.pdf)    
