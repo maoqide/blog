@@ -86,8 +86,10 @@ Raft 通过比较最后一个日志条目的 index 和 term 来**判断两个日
 
 ## 日志快照
 ![https://raft.github.io/raft.pdf](/media/posts/cloud/raft/raft-snapshot.png)    
-上图为一个节点用一个新的快照替换已提交的日志条目（序号1-5），快照中只存储当前的状态。快照还包含了最后的索引和任期号。    
-
+上图展示了一个基本的 Raft 的快照形式，每个节点独立的生成快照，且只包含已经提交的日志条目。节点用一个新的快照替换已提交的日志条目（序号1-5），快照中只存储当前的状态机的数据。快照中还包含一些元数据：快照的最后一个条目的索引和其任期号（即 *last included index* 和 *last included index*）。保存这些数据是为了支持跟在快照后面的第一个日志条目的 AppendEntries 的一致性检查，因为这个条目需要前一个日志条目的索引和任期号。为了支持集群的成员变更，最新的配置会被保存为快照的最后一个日志条目。一旦一个节点完成快照生成，就可以删除最后索引之前的所有日志和快照了。    
+虽然节点通常独立的生成快照，但 leader 必须偶尔发送快照给一些落后的 follower。这可能发生在当 leader 已经丢弃了需要发送给 follower 的下一条日志的时候。幸运的是，这种情况通常不会发生，与 leader 保持一致的 follower 应该已经拥有这一条目。但是，一个运行异常缓慢的 follower 节点或者新加入集群的节点，可能没有。将这样的一个 follower 节点同步到最新状态的方法，就是 leader 通过网络向其发送快照。    
+![https://raft.github.io/raft.pdf](/media/posts/cloud/raft/install-snapshot.png)    
+leader 使用一种新的如上图所示 InstallSnapshot RPC 向太过落后的 follower 发送快照。当 follower 收到这一请求时，必须决定如何处理已有的日志条目。通常快照会包含新的不存在于接收者日志中的条目，这种情况下，follower 直接丢弃自己已有的条目，已存在的日志全部被快照取代，并且有可能有和快照冲突的未提交条目。如果 follower 接收到的快照是自己日志的前面部分（由于网络重传或错误），那么快照包含的日志条目会被删除，但是快照之后的条目仍然有效且必须被保留。    
 
 ## Reference
 - [Raft 论文原文](https://raft.github.io/raft.pdf)    
