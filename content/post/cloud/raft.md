@@ -1,5 +1,5 @@
 ---
-title: "Raft"
+title: "Etcd 的基础-分布式一致性算法 Raft"
 author: "Maoqide"
 # cover: "/images/cover.jpg"
 tags: ["etcd", "raft", "distributed"]

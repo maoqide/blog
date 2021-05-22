@@ -1,5 +1,5 @@
 ---
-title: "Kubernetes Service 502"
+title: "Kubernetes Service 502, IPVS 的坑"
 author: "Maoqide"
 # cover: "/images/cover.jpg"
 tags: ["kubernetes", "ipvs", "problem"]
