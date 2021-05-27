@@ -11,7 +11,7 @@ draft: false
 <!--more-->
 
 ## 镜像
-在 dockerhub 的 nginx 镜像基础上，安装 openssh-client 客户端，并生成公私钥，主要是为了方便直接 scp 想要放到文件服务器上的文件吗，若想免密，可将镜像中生成的公钥拷贝到对应主机的 `~/.ssh/authorized_keys` 目录。个人认为 scp 更加方便，当然，也可以使用 nginx 的 upload 模块 [nginx-upload-module](https://www.nginx.com/resources/wiki/modules/upload/)，这样可以直接页面上传。    
+在 dockerhub 的 nginx 镜像基础上，安装 openssh-client 客户端，并生成公私钥，主要是为了方便直接 scp 想要放到文件服务器上的文件，若想免密，可将镜像中生成的公钥（`cat ~/.ssh/id_rsa.pub`）拷贝到对应主机的 `~/.ssh/authorized_keys` 目录。个人认为 scp 更加方便，当然，也可以使用 nginx 的 upload 模块 [nginx-upload-module](https://www.nginx.com/resources/wiki/modules/upload/)，这样可以直接页面上传。    
 ```Dockerfile
 FROM nginx:1.15
 RUN apt-get update -y &&\
