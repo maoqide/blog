@@ -66,3 +66,136 @@ draft: true
 - [ ] **链表实现**
 - [ ] **循环链表数组实现**
 
+# 10 递归
+	写递归代码的关键就是找到如何将大问题分解为小问题的规律，并且基于此写出递推公式，然后再推敲终止条件，最后将递推公式和终止条件翻译成代码。    
+
+- 递归代码要警惕堆栈溢出（限制递归深度）    
+- 递归代码要警惕重复计算（散列表保存计算结果）    
+
+# 11/12/13/14 排序
+### 冒泡排序（Bubble Sort）
+时间复杂度：最好 O(n)，最坏 O(nˆ2)，平均 O(nˆ2)    
+空间复杂度：O(1)，原地排序    
+稳定性：稳定排序    
+
+### 插入排序（Insertion Sort）
+时间复杂度：最好 O(n)，最坏 O(nˆ2)，平均 O(nˆ2)    
+空间复杂度：O(1)，原地排序    
+稳定性：稳定排序    
+
+### 选择排序（Selection Sort）
+时间复杂度：最好 O(nˆ2)，最坏 O(nˆ2)，平均 O(nˆ2)    
+空间复杂度：O(1)，原地排序    
+稳定性：非稳定排序    
+
+### 归并排序（Merge Sort）    
+时间复杂度：最好 O(nlogn)，最坏 O(nlogn)，平均 O(nlogn)    
+空间复杂度：O(nlogn)，非原地排序    
+稳定性：稳定排序    
+
+#### 实现：   
+``` 
+递推公式：    
+mergeSort(p…r) = merge(mergeSort(p…q), mergeSort(q+1…r))
+终止条件：
+p >= r
+
+merge()
+```
+总体原理：利用 merge() 函数合并两有序数组为新的有序数组，将原数组分割直至到达终止条件，递归调用 merge() 函数。    
+
+```golang
+// merge sort
+func mergeSort(a []int) {
+	mergeSortc(a, 0, len(a)-1)
+
+}
+
+func mergeSortc(a []int, start, end int) {
+	if start >= end {
+		return
+	}
+	mid := (start + end) / 2
+	mergeSortc(a, start, mid)
+	mergeSortc(a, mid+1, end)
+	merge(a, start, mid, end)
+}
+
+func merge(a []int, start, mid, end int) {
+	var tmp = make([]int, end-start+1, end-start+1)
+	var i, j = start, mid + 1
+	var k = 0
+	for ; i <= mid && j <= end; k++ {
+		if a[i] <= a[j] {
+			tmp[k] = a[i]
+			i++
+		} else {
+			tmp[k] = a[j]
+			j++
+		}
+	}
+	if i <= mid {
+		for ; i <= mid; i++ {
+			tmp[k] = a[i]
+			k++
+		}
+	} else {
+		// j <= end
+		for ; j <= end; j++ {
+			tmp[k] = a[j]
+			k++
+		}
+	}
+	copy(a[start:end+1], tmp)
+}
+```
+
+### 快速排序（Quicksort）    
+时间复杂度：最好 O(nlogn)，最坏 O(n^2)，平均 O(nlogn)    
+空间复杂度：O(1)，原地排序    
+稳定性：稳定排序    
+
+#### 实现
+```
+递推公式：
+quick_sort(p…r) = quick_sort(p…q-1) + quick_sort(q+1…r)
+
+终止条件：
+p >= r
+
+partition
+```
+总体原理：随机指定数组中一个元素 pivot（一般可指定为数组最后一个元素）， 利用 partition() 函数对无序数组进行分区，小于 pivot 的分在 pivot 左边，大于 pivot 的分在 pivot 右边。递归调用 partition()，将分区后的 pivot 两边的数组分别再进行分区，直至达到终止条件。    
+	原地分区，为了保证快速排序为原地排序，partition() 函数的时间复杂度要为 O(1)，所以分区时采用元素交换的方式，不申请额外的临时数组。
+
+```golang
+// quick sort
+func quickSort(a []int) {
+	qsort(a, 0, len(a)-1)
+	return
+}
+
+func qsort(a []int, start, end int) {
+	if start >= end {
+		return
+	}
+	pivot := partition(a, start, end)
+	qsort(a, start, pivot-1)
+	qsort(a, pivot+1, end)
+
+}
+
+func partition(a []int, l, r int) int {
+	pivotV := a[r]
+	i := l
+	for l < r {
+		if a[l] < pivotV {
+			a[i], a[l] = a[l], a[i]
+			i++
+		}
+		l++
+	}
+	a[i], a[r] = a[r], a[i]
+	return i
+}
+```
