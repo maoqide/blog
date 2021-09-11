@@ -4,7 +4,7 @@ author: "Maoqide"
 # cover: "/images/cover.jpg"
 tags: ["kubernetes", "crd"]
 date: 2020-10-29T09:00:05+08:00
-draft: true
+draft: false
 ---
 
 <!--more-->
@@ -183,11 +183,7 @@ spec:
 The CronTab "my-new-cron-object" is invalid: spec.replicas: Invalid value: 10: spec.replicas in body should be less than or equal to 10
 ```
 
-### 示例演示: wedoctor-app
-![](/media/posts/cloud/kubernetes-crd/wedoctorapp-controller.jpg)    
-
-
 
 *书籍推荐*    
 [Kubernetes Pattern](https://www.redhat.com/cms/managed-files/cm-oreilly-kubernetes-patterns-ebook-f19824-201910-en.pdf)
-/[中文翻译版](https://www.yuque.com/serviceup/cn-kubernetes-patterns/tquvrt)    
+[中文翻译版](https://www.yuque.com/serviceup/cn-kubernetes-patterns/tquvrt)    
