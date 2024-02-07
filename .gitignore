@@ -2,3 +2,4 @@ themes/*
 .vscode/*
 public/*
 *.ini
+.DS_Store
