@@ -1,0 +1,72 @@
+baseurl = ""
+title = "maoqide"
+theme = "hugo-coder"
+languagecode = "en"
+defaultcontentlanguage = "en"
+
+paginate = 20
+
+disqusShortname = "maoqide-1"
+
+[markup.highlight]
+style = "github-dark"
+
+[services]
+  [services.googleAnalytics]
+    ID = 'G-MHZR8L7VXH'
+
+[params]
+  author = "Maoqide"
+  info = "Working on Cloud Native"
+  description = "Maoqide's personal website"
+  keywords = "blog,developer,cloud-native"
+  avatarurl = "images/golang.svg"
+  #gravatar = "john.doe@example.com"
+
+  faviconSVG = "/img/favicon.svg"
+  favicon_32 = "/img/favicon-32x32.png"
+  favicon_16 = "/img/favicon-16x16.png"
+
+  since = 2018
+
+  enableTwemoji = true
+
+  colorScheme = "auto"
+  hidecolorschemetoggle = false
+  
+  # supported by custom footer.html in layouts/partials/footer.html
+  ICP = "浙ICP备19006182号"
+
+  # customCSS = ["css/custom.css"]
+  # customSCSS = ["scss/custom.scss"]
+  # customJS = ["js/custom.js"]
+
+[taxonomies]
+  category = "categories"
+  series = "series"
+  tag = "tags"
+  author = "authors"
+
+# Social links
+[[params.social]]
+  name = "Github"
+  icon = "fa-brands fa-github fa-2x"
+  weight = 1
+  url = "https://github.com/maoqide/"
+
+[params.baidu]
+    token = "c3c6dd2eb79bc741d95463b6040ac868"
+
+# Menu links
+[[menu.main]]
+  name = "Tag"
+  weight = 1
+  url = "tags/"
+[[menu.main]]
+  name = "Blog"
+  weight = 1
+  url = "posts/"
+[[menu.about]]
+  name = "About"
+  weight = 2
+  url = "about/"
