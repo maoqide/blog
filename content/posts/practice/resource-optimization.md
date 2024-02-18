@@ -4,7 +4,6 @@ date = 2024-02-07T17:25:40+08:00
 title = "云原生资源优化实践"
 authors = "Maoqide"
 tags = ["kubernetes", "cloud-native", "autoscaling"]
-categories = ["ss"]
 +++
 
 *本文发表于 infoQ: [infoQ 文章链接](https://www.infoq.cn/article/zvWONZ2fULHIXpfSh7dX)*
