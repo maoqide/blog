@@ -14,6 +14,8 @@ style = "github-dark"
 [services]
   [services.googleAnalytics]
     ID = 'G-MHZR8L7VXH'
+#  [services.disqus]
+#    shortname = 'maoqide-1'
 
 [params]
   author = "Maoqide"
