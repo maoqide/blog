@@ -1,11 +1,11 @@
 +++ 
 draft = false
 date = 2024-11-11T17:50:06+08:00
-title = ""
+title = "从 harbor 下载指定的镜像层"
 description = ""
 slug = ""
-authors = []
-tags = []
+author = "Maoqide"
+tags = ["cloud", "docker"]
 categories = []
 externalLink = ""
 series = []
